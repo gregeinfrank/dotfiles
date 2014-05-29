@@ -19,6 +19,7 @@ colorscheme tomorrow-night-dcosson
 command! -nargs=* HardTab setlocal noexpandtab shiftwidth=4
 command! -nargs=? SoftTab setlocal expandtab tabstop=<args> shiftwidth=<args> softtabstop=<args>
 
+set hidden " allow leaving buffer with outstanding changes
 set number
 set et
 set sw=4
@@ -70,6 +71,7 @@ autocmd FileType python nmap ,8 :call Pep8()<CR>
 autocmd FileType ruby set expandtab shiftwidth=2 softtabstop=2
 autocmd FileType yaml set expandtab shiftwidth=2 softtabstop=2
 
+autocmd FileType javascript set expandtab shiftwidth=2 softtabstop=2
 autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
 autocmd FileType html SoftTab 2
 autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
@@ -94,7 +96,7 @@ au BufRead,BufNewFile *.us set ft=html "our underscore.js html templates
 set wildignore+=*.pyc,node_modules/**
 let g:ctrlp_custom_ignore = {
   \ 'dir':  '\v[\/](\.git|node_modules)$',
-  \ 'file': '\v\.(exe|so|dll|pyc)$',
+  \ 'file': '\v\.(exe|so|dll|pyc|yaml)$',
   \ }
 let NERDTreeIgnore=[ '\.pyc$', '\.pyo$' ]
 
@@ -188,3 +190,20 @@ map ,ra :call VimuxRunNoseAll()<CR>
 map ,rF :call VimuxRunNoseFile()<CR>
 map ,rf :call VimuxRunNoseLine()<CR>
 map ,rr :call VimuxRunLastCommand()<CR>
+
+
+let @d='Aimport ipdb; ipdb.set_trace():w'
+
+" Disables swap files
+set noswapfile
+set nobackup
+set nowb
+
+" Keep undo history across sessions
+silent !mkdir ~/.vim/backups > /dev/null 2>&1
+set undodir=~/.vim/backups
+set undofile
+
+" Binding ctrl+c / ctrl+v for osx clipboard
+vmap <C-c> y:call system("pbcopy", getreg("\""))<CR>
+nmap <C-v> :call setreg("\"",system("pbpaste"))<CR>p
