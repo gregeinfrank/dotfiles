@@ -1,8 +1,8 @@
 [user]
-	name = Danny Cosson
-	email = dcosson@gmail.com
+	name = Greg Einfrank
+	email = greg.einfrank@venmo.com
 [core]
-	excludesfile = /Users/dcosson/.gitignore
+	excludesfile = /Users/gregoryeinfrank/.gitignore
 [rerere]
 	enabled = 1
 [remote "origin"]
@@ -24,8 +24,10 @@
 	tree = log --graph --decorate --pretty=oneline --abbrev-commit --all
 	up = pull --rebase
 	everything = log --pretty=format: --name-only --diff-filter=A
+        df = diff
+        ds = diff --staged
 [push]
-	default = simple
+	default = current
 [merge]
 	defaultToUpstream = true
 [color]
