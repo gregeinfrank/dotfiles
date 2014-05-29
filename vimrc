@@ -43,6 +43,8 @@ set splitbelow splitright
 
 set mouse=a  " enable scroll with mouse wheel
 
+let mapleader=","
+
 " Powerline status line
 let g:Powerline_symbols = 'fancy'
 let g:Powerline_colorscheme = 'default'
@@ -180,8 +182,9 @@ nmap ,R :!!<CR>
 
 
 " --- Vimux commands to run tests
-let g:vimux_nose_setup_cmd="vagrant ssh; if [ -d /ebs/appvenmo/venmo_tests ] ; then cd /ebs/appvenmo; else cd /vagrant; fi"
+let g:vimux_nose_setup_cmd="vagrant ssh; cd /vagrant"
 let g:vimux_nose_options="--nologcapture"
+
 map ,rs :call VimuxRunNoseSetup()<CR>
 map ,ri :call VimuxInspectRunner()<CR>
 map ,rc :call VimuxCloseRunner()<CR>
@@ -190,7 +193,6 @@ map ,ra :call VimuxRunNoseAll()<CR>
 map ,rF :call VimuxRunNoseFile()<CR>
 map ,rf :call VimuxRunNoseLine()<CR>
 map ,rr :call VimuxRunLastCommand()<CR>
-
 
 let @d='Aimport ipdb; ipdb.set_trace():w'
 

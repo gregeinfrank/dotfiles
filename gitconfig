@@ -22,13 +22,16 @@
 	st = status
 	sup = "submodule foreach 'git co master; git up'"
 	tree = log --graph --decorate --pretty=oneline --abbrev-commit --all
-	up = pull --rebase
+	up = "!git remote update -p; git merge --ff-only @{u}"
 	everything = log --pretty=format: --name-only --diff-filter=A
         df = diff
         ds = diff --staged
+        browse = "!hub browse"
 [push]
 	default = current
 [merge]
 	defaultToUpstream = true
 [color]
 	ui = true
+[hub]
+	host = github.braintreeps.com
