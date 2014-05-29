@@ -185,6 +185,15 @@ nmap ,R :!!<CR>
 let g:vimux_nose_setup_cmd="vagrant ssh; cd /vagrant"
 let g:vimux_nose_options="--nologcapture"
 
+map <Leader>rs :call VimuxRunNoseSetup()<CR>
+map <Leader>ri :call VimuxInspectRunner()<CR>
+map <Leader>rc :call VimuxCloseRunner()<CR>
+
+map <Leader>ra :call VimuxRunNoseAll()<CR>
+map <Leader>rF :call VimuxRunNoseFile()<CR>
+map <Leader>rf :call VimuxRunNoseLine()<CR>
+map <Leader>rr :call VimuxRunLastCommand()<CR>
+
 let @d='Aimport ipdb; ipdb.set_trace():w'
 
 " Disables swap files
@@ -200,11 +209,4 @@ set undofile
 " Binding ctrl+c / ctrl+v for osx clipboard
 vmap <C-c> y:call system("pbcopy", getreg("\""))<CR>
 nmap <C-v> :call setreg("\"",system("pbpaste"))<CR>p
-map <Leader>rs :call VimuxRunNoseSetup()<CR>
-map <Leader>ri :call VimuxInspectRunner()<CR>
-map <Leader>rc :call VimuxCloseRunner()<CR>
 
-map <Leader>ra :call VimuxRunNoseAll()<CR>
-map <Leader>rF :call VimuxRunNoseFile()<CR>
-map <Leader>rf :call VimuxRunNoseLine()<CR>
-map <Leader>rr :call VimuxRunLastCommand()<CR>
