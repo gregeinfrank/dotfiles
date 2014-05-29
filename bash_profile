@@ -45,6 +45,30 @@ alias mongolocal='sudo mongod run --config /usr/local/etc/mongod.conf --fork && 
 # toggle show/hide hidden files in Finder
 alias showhidefileson='defaults write com.apple.Finder AppleShowAllFiles YES; killall -HUP Finder'
 alias showhidefilesoff='defaults write com.apple.Finder AppleShowAllFiles NO; killall -HUP Finder'
+alias gsl="git stash list"
+alias gss="git add -A && git stash save"
+gsa () {
+    if (( $# == 0 )); then
+        git stash apply
+    else
+        git stash apply stash@{$1}
+    fi
+}
+gsd () {
+    if (( $# == 0 )); then
+        git stash drop
+    else
+        git stash drop stash@{$1}
+    fi
+}
+
+if [ -f `brew --prefix`/etc/bash_completion.d/vagrant ]; then
+    source `brew --prefix`/etc/bash_completion.d/vagrant
+fi
+
+if [ -f ~/.git-completion.bash ]; then
+    . ~/.git-completion.bash
+fi
 
 ### Source other bash files with specific/private setups
 if [ -f ~/.bash_profile_extensions ] ; then
