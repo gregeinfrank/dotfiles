@@ -1,6 +1,7 @@
 [user]
 	name = Greg Einfrank
-	email = greg.einfrank@venmo.com
+	email = greg.einfrank@gmail.com
+	username = gregeinfrank
 [core]
 	excludesfile = /Users/gregoryeinfrank/.gitignore
 [rerere]
