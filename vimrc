@@ -25,9 +25,6 @@ set et
 set sw=4
 set smarttab
 " set smartindent
-set incsearch
-set hlsearch
-set smartcase
 set cursorline
 " set cursorcolumn
 set title
@@ -36,7 +33,12 @@ set showmode
 set showcmd
 set ai " Automatically set the indent of a new line (local to buffer)
 set tags=./tags;
-set grepprg=ack
+
+"" Searching
+set hlsearch    " highlight matches
+set incsearch   " incremental searching
+set ignorecase  " searches are case insensitive...
+set smartcase   " ... unless they contain at least one capital
 
 set equalalways " Multiple windows, when created, are equal in size
 set splitbelow splitright
@@ -69,6 +71,9 @@ autocmd FileType python set nosmartindent list shiftwidth=4 softtabstop=4
 autocmd FileType python set omnifunc=pythoncomplete#Complete
 let g:pydiction_location = '~/.vim/bundle/pydiction/complete-dict'
 autocmd FileType python nmap ,8 :call Pep8()<CR>
+"" auto-remove trailing whitespace
+autocmd BufWritePre *.py :%s/\s\+$//e
+
 " Ruby
 autocmd FileType ruby set expandtab shiftwidth=2 softtabstop=2
 autocmd FileType yaml set expandtab shiftwidth=2 softtabstop=2
@@ -195,6 +200,7 @@ map <Leader>rf :call VimuxRunNoseLine()<CR>
 map <Leader>rr :call VimuxRunLastCommand()<CR>
 
 let @d='Aimport ipdb; ipdb.set_trace():w'
+" noremap ,d Oimport pdb; pdb.set_trace()<Esc>
 
 " Disables swap files
 set noswapfile
@@ -213,3 +219,45 @@ nmap <C-v> :call setreg("\"",system("pbpaste"))<CR>p
 " Highlight red any characters over the 100 character limit (Python)
 highlight OverLength ctermbg=red ctermfg=white guibg=#592929
 match OverLength /\%101v.\+/
+
+" Jedi
+let g:jedi#use_tabs_not_buffers = 0
+let g:jedi#use_splits_not_buffers = "right"
+let g:jedi#popup_on_dot = 0
+let g:jedi#completions_enabled = 0
+
+let gitdir=system("git rev-parse --show-toplevel")
+if empty(gitdir)
+    " not a git repo
+    let gitdir = "."
+else
+    " remove \r\n
+    let gitdir = gitdir[:-2]
+endif
+
+let pythoncmd = "python -c 'import os.path; print os.path.relpath(\"" . gitdir . "\")'"
+let relgitdir = system(pythoncmd)[:-2]
+
+" grep word under cursor
+set grepprg=ack
+nnoremap <leader>l :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
+execute "nnoremap <leader>f :grep! \"\\b<C-R><C-W>\\b\" " . relgitdir . "<CR>:cw<CR>"
+
+" bind \ (backward slash) to grep shortcut
+command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
+execute "nnoremap \\ :Ag  " . relgitdir . "<C-Left><left>"
+
+"" Emacs-style autoindent
+" set cinkeys=0{,0},0),0#,!<Tab>,;,:,o,O,e
+" set indentkeys=!<Tab>,o,O
+" map <Tab> i<Tab><Esc>^
+" filetype indent on
+" set cinoptions=:0,(0,u0,W1s
+" autocmd FileType * setlocal indentkeys+=!<Tab>
+
+"" Smooth scrolling (http://stackoverflow.com/questions/4064651)
+noremap <expr> <C-u> repeat("\<C-y>", 20)
+noremap <expr> <C-d> repeat("\<C-e>", 20)
+set so=7
+
+au BufRead *.spt set ft=python
