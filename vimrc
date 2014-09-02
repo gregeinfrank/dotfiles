@@ -105,7 +105,7 @@ let g:ctrlp_custom_ignore = {
   \ 'dir':  '\v[\/](\.git|node_modules)$',
   \ 'file': '\v\.(exe|so|dll|pyc|yaml)$',
   \ }
-let NERDTreeIgnore=[ '\.pyc$', '\.pyo$' ]
+let NERDTreeIgnore=[ '\.pyc$', '\.pyo$', '\.db$' ]
 
 " fix backspace in vim 7
 :set backspace=indent,eol,start
@@ -244,16 +244,8 @@ nnoremap <leader>l :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
 execute "nnoremap <leader>f :grep! \"\\b<C-R><C-W>\\b\" " . relgitdir . "<CR>:cw<CR>"
 
 " bind \ (backward slash) to grep shortcut
-command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
-execute "nnoremap \\ :Ag  " . relgitdir . "<C-Left><left>"
-
-"" Emacs-style autoindent
-" set cinkeys=0{,0},0),0#,!<Tab>,;,:,o,O,e
-" set indentkeys=!<Tab>,o,O
-" map <Tab> i<Tab><Esc>^
-" filetype indent on
-" set cinoptions=:0,(0,u0,W1s
-" autocmd FileType * setlocal indentkeys+=!<Tab>
+" command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
+" execute "nnoremap \\ :Ag  " . relgitdir . "<C-Left><left>"
 
 "" Smooth scrolling (http://stackoverflow.com/questions/4064651)
 noremap <expr> <C-u> repeat("\<C-y>", 20)
