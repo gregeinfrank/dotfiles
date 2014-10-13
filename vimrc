@@ -106,6 +106,7 @@ let g:ctrlp_custom_ignore = {
   \ 'file': '\v\.(exe|so|dll|pyc|yaml)$',
   \ }
 let NERDTreeIgnore=[ '\.pyc$', '\.pyo$', '\.db$' ]
+autocmd vimenter * NERDTree
 
 " fix backspace in vim 7
 :set backspace=indent,eol,start
@@ -187,7 +188,7 @@ nmap ,R :!!<CR>
 
 
 " --- Vimux commands to run tests
-let g:vimux_nose_setup_cmd="vagrant ssh; cd /vagrant"
+let g:vimux_nose_setup_cmd="cd ~/code/growthkit-vm; vagrant up; vagrant ssh; cd /vagrant"
 let g:vimux_nose_options="--nologcapture"
 
 map <Leader>rs :call VimuxRunNoseSetup()<CR>
@@ -198,9 +199,6 @@ map <Leader>ra :call VimuxRunNoseAll()<CR>
 map <Leader>rF :call VimuxRunNoseFile()<CR>
 map <Leader>rf :call VimuxRunNoseLine()<CR>
 map <Leader>rr :call VimuxRunLastCommand()<CR>
-
-let @d='Aimport ipdb; ipdb.set_trace():w'
-" noremap ,d Oimport pdb; pdb.set_trace()<Esc>
 
 " Disables swap files
 set noswapfile
@@ -242,6 +240,18 @@ let relgitdir = system(pythoncmd)[:-2]
 set grepprg=ack
 nnoremap <leader>l :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
 execute "nnoremap <leader>f :grep! \"\\b<C-R><C-W>\\b\" " . relgitdir . "<CR>:cw<CR>"
+
+" python-mode (pymode)
+let g:pymode_folding = 0
+let g:pymode_rope_complete_on_dot = 0
+let g:pymode_rope_completion = 1
+let g:pymode_options_max_line_length = 100
+let g:pymode_lint_options_pep8 = 
+    \ {'max_line_length': g:pymode_options_max_line_length}
+let g:pymode_breakpoint_cmd = "import ipdb; ipdb.set_trace()  # XXX BREAKPOINT"
+let g:pymode_quickfix_minheight = 1
+let g:pymode_quickfix_maxheight = 2
+let g:pymode_lint_cwindow = 0
 
 " bind \ (backward slash) to grep shortcut
 " command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!

@@ -40,6 +40,8 @@ fi
 # export EC2_CERT="$(/bin/ls $HOME/.ec2/cert-*.pem)"
 # export EC2_HOME="/usr/local/Library/LinkedKegs/ec2-api-tools/jars"
 
+# Growthkit aliases
+alias growthkit='cd ~/code/growthkit-vm'
 
 ### OSX-specific aliases
 # run local mongodb (from /usr/local) and put it in the background
