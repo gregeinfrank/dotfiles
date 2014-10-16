@@ -252,6 +252,7 @@ let g:pymode_breakpoint_cmd = "import ipdb; ipdb.set_trace()  # XXX BREAKPOINT"
 let g:pymode_quickfix_minheight = 1
 let g:pymode_quickfix_maxheight = 2
 let g:pymode_lint_cwindow = 0
+let g:pymode_indent = 0
 
 " bind \ (backward slash) to grep shortcut
 " command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
