@@ -154,6 +154,9 @@ endif
 nnoremap ,w :TlistToggle<CR>
 nnoremap ,W :NERDTreeToggle<CR>
 
+" ctrl-J to split/break a line in normal mode
+:nnoremap <NL> i<CR><ESC>
+
 " Taglist options
 let g:Tlist_Ctags_Cmd = '/usr/local/bin/ctags'
 let Tlist_Use_Right_Window = 1
@@ -180,15 +183,8 @@ nmap <Ctrl>P ::CtrlPClearCache<CR>
 nmap ,e :SyntasticCheck<CR> :Errors<CR>
 nmap ,R :!!<CR>
 
-"folding settings
-" set foldmethod=indent   "fold based on indent
-" set foldnestmax=10      "deepest fold is 10 levels
-" set foldlevel=1
-
-
-
 " --- Vimux commands to run tests
-let g:vimux_nose_setup_cmd="cd ~/code/growthkit-vm; vagrant up; vagrant ssh; cd /vagrant"
+let g:vimux_nose_setup_cmd="cd ~/code/mave/infrastructure; \\$(boot2docker shellinit); fig run platform bash"
 let g:vimux_nose_options="--nologcapture"
 
 map <Leader>rs :call VimuxRunNoseSetup()<CR>
@@ -212,11 +208,6 @@ set undofile
 
 " Binding ctrl+c / ctrl+v for osx clipboard
 vmap <C-c> y:call system("pbcopy", getreg("\""))<CR>
-nmap <C-v> :call setreg("\"",system("pbpaste"))<CR>p
-
-" Highlight red any characters over the 100 character limit (Python)
-highlight OverLength ctermbg=red ctermfg=white guibg=#592929
-match OverLength /\%101v.\+/
 
 " Jedi
 let g:jedi#use_tabs_not_buffers = 0
