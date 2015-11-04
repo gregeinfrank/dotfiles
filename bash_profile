@@ -40,14 +40,18 @@ fi
 # export EC2_CERT="$(/bin/ls $HOME/.ec2/cert-*.pem)"
 # export EC2_HOME="/usr/local/Library/LinkedKegs/ec2-api-tools/jars"
 
-export HOCKEYAPP_API_TOKEN="ab6f1fa047c04f44a582fe016f06886c"
 
 # Fin aliases
 alias fcore='cd ~/code/fin/fin-core-beta'
 alias fios='cd ~/code/fin/fin-ios'
 
-# Growthkit aliases
-alias growthkit='cd ~/code/growthkit-vm'
+# Mave aliases
+alias infrastructure='cd ~/code/mave/infrastructure'
+alias marketing='cd ~/code/mave/marketing'
+alias dashboard='cd ~/code/mave/dashboard'
+alias platform='cd ~/code/mave/platform'
+alias appplatform='cd ~/code/mave/appplatform'
+alias mave='cd ~/code/mave'
 
 ### OSX-specific aliases
 # run local mongodb (from /usr/local) and put it in the background
@@ -86,8 +90,12 @@ if [ -f ~/.bash_profile_extensions ] ; then
    source ~/.bash_profile_extensions
 fi
 
-if [ -f ~/.bash_profile_venmo ] ; then
-    source ~/.bash_profile_venmo
+if [ -f ~/.bash_profile_aws ] ; then
+    source ~/.bash_profile_aws
+fi
+
+if [ -f ~/.bash_profile_hockeyapp ] ; then
+    source ~/.bash_profile_hockeyapp
 fi
 
 ### nosecomplete
@@ -130,5 +138,35 @@ _nosetests()
     __ltrim_colon_completions "$cur"
 }
 complete -o nospace -F _nosetests nosetests
+
+# Add the following lines of code to your `~/.bash_profile`,
+# and then run `source ~/.bash_profile` to be able to execute 
+# this from the command line.
+
+openx() {
+    fileToOpen='';
+    for file in `find . -maxdepth 1 -name *.xcworkspace`; do
+        fileToOpen=$file
+    done
+
+    if [ -n "$fileToOpen" ]
+    then
+        echo $fileToOpen
+        open $fileToOpen
+    else
+        for file in `find . -maxdepth 1 -name *.xcodeproj`; do
+            fileToOpen=$file
+        done
+
+        if [ -n "$fileToOpen" ]
+        then
+            echo $fileToOpen
+            open $fileToOpen
+        else
+            echo "No xcode files to open."
+        fi
+    fi
+}
+alias ox=openx
 
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*

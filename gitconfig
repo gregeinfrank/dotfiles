@@ -10,6 +10,9 @@
 	push = HEAD
 [branch "master"]
 	merge = refs/heads/master
+[diff "scpt"]
+        textconv = osadecompile
+        binary=true
 [alias]
         br = branch
 	ci = commit -a
