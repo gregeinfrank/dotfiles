@@ -130,4 +130,34 @@ _nosetests()
 }
 complete -o nospace -F _nosetests nosetests
 
+# Add the following lines of code to your `~/.bash_profile`,
+# and then run `source ~/.bash_profile` to be able to execute 
+# this from the command line.
+
+openx() {
+    fileToOpen='';
+    for file in `find . -maxdepth 1 -name *.xcworkspace`; do
+        fileToOpen=$file
+    done
+
+    if [ -n "$fileToOpen" ]
+    then
+        echo $fileToOpen
+        open $fileToOpen
+    else
+        for file in `find . -maxdepth 1 -name *.xcodeproj`; do
+            fileToOpen=$file
+        done
+
+        if [ -n "$fileToOpen" ]
+        then
+            echo $fileToOpen
+            open $fileToOpen
+        else
+            echo "No xcode files to open."
+        fi
+    fi
+}
+alias ox=openx
+
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
