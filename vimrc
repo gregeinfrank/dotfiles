@@ -50,6 +50,7 @@ let mapleader=","
 " Powerline status line
 let g:Powerline_symbols = 'fancy'
 let g:Powerline_colorscheme = 'default'
+let g:Powerline_stl_path_style = 'short'
 set t_Co=256
 set laststatus=2 "show even if window not split
 " set statusline=%F%m%r%h%w\ \ \ [TYPE=%Y]\ \ \ [POS=%l,%v][%p%%]" [FORMAT=%{&ff}] %{strftime(\"%d/%m/%y\ -\ %H:%M\")} %F%m%r%h%w
@@ -78,8 +79,12 @@ autocmd BufWritePre *.py :%s/\s\+$//e
 autocmd FileType ruby set expandtab shiftwidth=2 softtabstop=2
 autocmd FileType yaml set expandtab shiftwidth=2 softtabstop=2
 
+" Javascript / HTML / CSS
 autocmd FileType javascript set expandtab shiftwidth=2 softtabstop=2
 autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
+"" auto-remove trailing whitespace
+autocmd BufWritePre *.js :%s/\s\+$//e
+autocmd BufWritePre *.jsx :%s/\s\+$//e
 autocmd FileType html SoftTab 2
 autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
 autocmd FileType css SoftTab 2
@@ -102,11 +107,12 @@ au BufRead,BufNewFile *.us set ft=html "our underscore.js html templates
 " don't show binary files in list of files to open
 set wildignore+=*.pyc,node_modules/**
 let g:ctrlp_custom_ignore = {
-  \ 'dir':  '\v[\/](\.git|node_modules)$',
+  \ 'dir':  '\v[\/](\.git|node_modules|compiled_site)$',
   \ 'file': '\v\.(exe|so|dll|pyc|yaml)$',
   \ }
 let NERDTreeIgnore=[ '\.pyc$', '\.pyo$', '\.db$' ]
-autocmd vimenter * NERDTree
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 
 " fix backspace in vim 7
 :set backspace=indent,eol,start
@@ -151,16 +157,10 @@ if has("autocmd")
 endif
 
 " Open useful sidebars (taglist, nerdtree)
-nnoremap ,w :TlistToggle<CR>
-nnoremap ,W :NERDTreeToggle<CR>
+nnoremap ,w :NERDTreeToggle<CR>
 
 " ctrl-J to split/break a line in normal mode
 :nnoremap <NL> i<CR><ESC>
-
-" Taglist options
-let g:Tlist_Ctags_Cmd = '/usr/local/bin/ctags'
-let Tlist_Use_Right_Window = 1
-let Tlist_WinWidth = 45
 
 """
 """ Syntastic syntax checking 
@@ -184,7 +184,7 @@ nmap ,e :SyntasticCheck<CR> :Errors<CR>
 nmap ,R :!!<CR>
 
 " --- Vimux commands to run tests
-let g:vimux_nose_setup_cmd="cd ~/code/mave/infrastructure; \\$(boot2docker shellinit); fig run platform bash"
+let g:vimux_nose_setup_cmd="cd ~/code/mave/infrastructure; vagrant ssh"
 let g:vimux_nose_options="--nologcapture"
 
 map <Leader>rs :call VimuxRunNoseSetup()<CR>
@@ -196,10 +196,15 @@ map <Leader>rF :call VimuxRunNoseFile()<CR>
 map <Leader>rf :call VimuxRunNoseLine()<CR>
 map <Leader>rr :call VimuxRunLastCommand()<CR>
 
+map <Leader>rt :call VimuxRunCommand("karma start")<CR>
+
 " Disables swap files
 set noswapfile
 set nobackup
 set nowb
+
+" line wrapping
+set wrap
 
 " Keep undo history across sessions
 silent !mkdir ~/.vim/backups > /dev/null 2>&1
@@ -236,7 +241,7 @@ execute "nnoremap <leader>f :grep! \"\\b<C-R><C-W>\\b\" " . relgitdir . "<CR>:cw
 let g:pymode_folding = 0
 let g:pymode_rope_complete_on_dot = 0
 let g:pymode_rope_completion = 1
-let g:pymode_options_max_line_length = 100
+let g:pymode_options_max_line_length = 80
 let g:pymode_lint_options_pep8 = 
     \ {'max_line_length': g:pymode_options_max_line_length}
 let g:pymode_breakpoint_cmd = "import ipdb; ipdb.set_trace()  # XXX BREAKPOINT"
@@ -244,6 +249,7 @@ let g:pymode_quickfix_minheight = 1
 let g:pymode_quickfix_maxheight = 2
 let g:pymode_lint_cwindow = 0
 let g:pymode_indent = 0
+let g:pymode_run = 0 " Turn off <leader>r for running python 
 
 " bind \ (backward slash) to grep shortcut
 " command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
