@@ -40,6 +40,12 @@ fi
 # export EC2_CERT="$(/bin/ls $HOME/.ec2/cert-*.pem)"
 # export EC2_HOME="/usr/local/Library/LinkedKegs/ec2-api-tools/jars"
 
+export HOCKEYAPP_API_TOKEN="ab6f1fa047c04f44a582fe016f06886c"
+
+# Fin aliases
+alias fcore='cd ~/code/fin/fin-core-beta'
+alias fios='cd ~/code/fin/fin-ios'
+
 # Growthkit aliases
 alias growthkit='cd ~/code/growthkit-vm'
 

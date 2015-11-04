@@ -151,8 +151,8 @@ if has("autocmd")
 endif
 
 " Open useful sidebars (taglist, nerdtree)
-nnoremap ,w :TlistToggle<CR>
-nnoremap ,W :NERDTreeToggle<CR>
+" nnoremap ,w :TlistToggle<CR>
+nnoremap ,w :NERDTreeToggle<CR>
 
 " Taglist options
 let g:Tlist_Ctags_Cmd = '/usr/local/bin/ctags'
@@ -194,11 +194,16 @@ let g:vimux_nose_options="--nologcapture"
 map <Leader>rs :call VimuxRunNoseSetup()<CR>
 map <Leader>ri :call VimuxInspectRunner()<CR>
 map <Leader>rc :call VimuxCloseRunner()<CR>
-
-map <Leader>ra :call VimuxRunNoseAll()<CR>
-map <Leader>rF :call VimuxRunNoseFile()<CR>
-map <Leader>rf :call VimuxRunNoseLine()<CR>
 map <Leader>rr :call VimuxRunLastCommand()<CR>
+
+autocmd FileType python map <Leader>ra :call VimuxRunNoseAll()<CR>
+autocmd FileType python map <Leader>rF :call VimuxRunNoseFile()<CR>
+autocmd FileType python map <Leader>rf :call VimuxRunNoseLine()<CR>
+
+autocmd FileType ruby  map <Leader>ra :call VimuxRunCommand("rspec")<CR>
+autocmd FileType ruby  map <Leader>rF :RunAllRubyTests<CR>
+autocmd FileType ruby  map <Leader>rf :RunRubyFocusedTest<CR>
+
 
 " Disables swap files
 set noswapfile
@@ -212,7 +217,7 @@ set undofile
 
 " Binding ctrl+c / ctrl+v for osx clipboard
 vmap <C-c> y:call system("pbcopy", getreg("\""))<CR>
-nmap <C-v> :call setreg("\"",system("pbpaste"))<CR>p
+" nmap <C-v> :call setreg("\"",system("pbpaste"))<CR>p
 
 " Highlight red any characters over the 100 character limit (Python)
 highlight OverLength ctermbg=red ctermfg=white guibg=#592929
