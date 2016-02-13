@@ -72,16 +72,22 @@ autocmd FileType python set nosmartindent list shiftwidth=4 softtabstop=4
 autocmd FileType python set omnifunc=pythoncomplete#Complete
 let g:pydiction_location = '~/.vim/bundle/pydiction/complete-dict'
 autocmd FileType python nmap ,8 :call Pep8()<CR>
+
 "" auto-remove trailing whitespace
 autocmd BufWritePre *.py :%s/\s\+$//e
+autocmd BufWritePre *.rb :%s/\s\+$//e
+autocmd BufWritePre *.js :%s/\s\+$//e
 
 " Ruby
 autocmd FileType ruby set expandtab shiftwidth=2 softtabstop=2
 autocmd FileType yaml set expandtab shiftwidth=2 softtabstop=2
 
-" Javascript / HTML / CSS
-autocmd FileType javascript set expandtab shiftwidth=2 softtabstop=2
-autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
+" " Javascript / HTML / CSS
+" autocmd FileType javascript set expandtab shiftwidth=2 softtabstop=2
+" autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
+autocmd Filetype javascript setlocal ts=2 sts=2 sw=2
+let g:jsx_ext_required = 0
+
 "" auto-remove trailing whitespace
 autocmd BufWritePre *.js :%s/\s\+$//e
 autocmd BufWritePre *.jsx :%s/\s\+$//e
@@ -159,7 +165,7 @@ endif
 " Open useful sidebars (taglist, nerdtree)
 nnoremap ,w :NERDTreeToggle<CR>
 
-" ctrl-J to split/break a line in normal mode
+" ctrl-J to split/break a line in normal mode (opposite of shift+j)
 :nnoremap <NL> i<CR><ESC>
 
 """
@@ -178,14 +184,22 @@ let g:syntastic_check_on_open=1
 let g:syntastic_mode_map = { 'mode': 'active',
                            \ 'active_filetypes': [],
                            \ 'passive_filetypes': ['txt', 'go'] }
+ 
+" npm install -g eslint
+let g:syntastic_javascript_checkers = ['eslint']
+let g:syntastic_ruby_checkers = ["mri", "rubocop"]
+
+
 " key shortcuts
 nmap <Ctrl>P ::CtrlPClearCache<CR>
 nmap ,e :SyntasticCheck<CR> :Errors<CR>
 nmap ,R :!!<CR>
 
 " --- Vimux commands to run tests
-let g:vimux_nose_setup_cmd="cd ~/code/mave/infrastructure; vagrant ssh"
+let g:vimux_nose_setup_cmd="cd ~/code/fin/fin-core-beta; ./dev-scripts/docker-shell.sh"
 let g:vimux_nose_options="--nologcapture"
+let g:vimux_ruby_cmd_unit_test = "rspec"
+let g:vimux_ruby_file_relative_paths = 1
 
 map <Leader>rs :call VimuxRunNoseSetup()<CR>
 map <Leader>ri :call VimuxInspectRunner()<CR>
@@ -217,8 +231,8 @@ set undofile
 vmap <C-c> y:call system("pbcopy", getreg("\""))<CR>
 
 " Highlight red any characters over the 80 character limit (Python)
-highlight OverLength ctermbg=red ctermfg=white guibg=#592929
-match OverLength /\%81v.\+/
+"highlight OverLength ctermbg=grey ctermfg=white guibg=#592929
+"match OverLength /\%81v.\+/
 
 " Jedi
 let g:jedi#use_tabs_not_buffers = 0
