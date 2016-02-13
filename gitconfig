@@ -31,11 +31,12 @@
         df = diff
         ds = diff --staged
         browse = "!hub browse"
+        delete-merged = "!git fetch origin && git branch -d $(git branch --merged | grep -v '*' | grep -v master)"
 [push]
 	default = current
 [merge]
 	defaultToUpstream = true
 [color]
 	ui = true
-[hub]
-	host = github.braintreeps.com
+[pull]
+	default = current
