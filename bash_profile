@@ -34,6 +34,9 @@ if [ -f `brew --prefix`/bin/aws_completer ]; then
 complete -C aws_completer aws
 fi
 
+# fuck
+eval "$(thefuck --alias)"
+
 # EC2 Command Line Tools - not really using recently
 # export JAVA_HOME="`/usr/libexec/java_home -v 1.6`"
 # export EC2_PRIVATE_KEY="$(/bin/ls $HOME/.ec2/pk-*.pem)"
@@ -43,7 +46,9 @@ fi
 
 # Fin aliases
 alias fcore='cd ~/code/fin/fin-core-beta'
+alias finfrastructure='cd ~/code/fin/finfrastructure'
 alias fios='cd ~/code/fin/fin-ios'
+eval "$(hub alias -s)"
 
 # Mave aliases
 alias infrastructure='cd ~/code/mave/infrastructure'
@@ -92,6 +97,10 @@ fi
 
 if [ -f ~/.bash_profile_aws ] ; then
     source ~/.bash_profile_aws
+fi
+
+if [ -f ~/.bash_profile_fin ] ; then
+    source ~/.bash_profile_fin
 fi
 
 if [ -f ~/.bash_profile_hockeyapp ] ; then
