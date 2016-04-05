@@ -85,3 +85,6 @@
 [submodule "vim/bundle/vim-hcl"]
 	path = vim/bundle/vim-hcl
 	url = git@github.com:b4b4r07/vim-hcl.git
+[submodule "vim/bundle/vimux-ruby-test"]
+	path = vim/bundle/vimux-ruby-test
+	url = git@github.com:pgr0ss/vimux-ruby-test.git
