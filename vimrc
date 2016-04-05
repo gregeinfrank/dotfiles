@@ -86,7 +86,7 @@ autocmd FileType yaml set expandtab shiftwidth=2 softtabstop=2
 " autocmd FileType javascript set expandtab shiftwidth=2 softtabstop=2
 " autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
 autocmd Filetype javascript setlocal ts=2 sts=2 sw=2
-let g:jsx_ext_required = 0
+let g:jsx_ext_required = 0 " Allow JSX in normal JS files
 
 "" auto-remove trailing whitespace
 autocmd BufWritePre *.js :%s/\s\+$//e
@@ -100,6 +100,11 @@ augroup mkd
   autocmd BufRead *.mkd  set ai formatoptions=tcroqn2 comments=n:&gt;
 augroup END
 
+" Quicker window movement
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-h> <C-w>h
+nnoremap <C-l> <C-w>l
 
 " SnipMate? Not using it, maybe someday i will
 "autocmd FileType python set ft=python.django " For SnipMate
@@ -194,6 +199,7 @@ let g:syntastic_ruby_checkers = ["mri", "rubocop"]
 nmap <Ctrl>P ::CtrlPClearCache<CR>
 nmap ,e :SyntasticCheck<CR> :Errors<CR>
 nmap ,R :!!<CR>
+autocmd FileType ruby :nnoremap ,b obinding.pry<ESC>
 
 " --- Vimux commands to run tests
 let g:vimux_nose_setup_cmd="cd ~/code/fin/fin-core-beta; ./dev-scripts/docker-shell.sh"

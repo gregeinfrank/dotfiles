@@ -46,6 +46,7 @@ eval "$(thefuck --alias)"
 
 # Fin aliases
 alias fcore='cd ~/code/fin/fin-core-beta'
+alias dockizzle='cd ~/code/fin/fin-core-beta && ./dev-scripts/docker-shell.sh'
 alias finfrastructure='cd ~/code/fin/finfrastructure'
 alias fios='cd ~/code/fin/fin-ios'
 eval "$(hub alias -s)"
