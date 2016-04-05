@@ -224,6 +224,7 @@ autocmd FileType ruby  map <Leader>rf :RunRubyFocusedTest<CR>
 set noswapfile
 set nobackup
 set nowb
+set nowritebackup
 
 " line wrapping
 set wrap
