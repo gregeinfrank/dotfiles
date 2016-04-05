@@ -94,6 +94,7 @@ autocmd BufWritePre *.jsx :%s/\s\+$//e
 autocmd FileType html SoftTab 2
 autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
 autocmd FileType css SoftTab 2
+autocmd FileType scss SoftTab 2
 autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 
 augroup mkd
@@ -114,11 +115,12 @@ nnoremap <C-l> <C-w>l
 au BufRead,BufNewFile {Capfile,Gemfile,Rakefile,Vagrantfile,Thorfile,config.ru,.caprc,.irbrc,irb_tempfile*} set ft=ruby
 au BufRead,BufNewFile {*.less,*.sass} set ft=css
 au BufRead,BufNewFile *.us set ft=html "our underscore.js html templates
+au BufRead,BufNewFile {*.tfstate,*.tfstate.backup} set ft=json
 
 " don't show binary files in list of files to open
 set wildignore+=*.pyc,node_modules/**
 let g:ctrlp_custom_ignore = {
-  \ 'dir':  '\v[\/](\.git|node_modules|compiled_site)$',
+  \ 'dir':  '\v[\/](\.git|node_modules|compiled_site|dist)$',
   \ 'file': '\v\.(exe|so|dll|pyc|yaml)$',
   \ }
 let NERDTreeIgnore=[ '\.pyc$', '\.pyo$', '\.db$' ]
@@ -188,7 +190,7 @@ let g:syntastic_check_on_open=1
 " mode info
 let g:syntastic_mode_map = { 'mode': 'active',
                            \ 'active_filetypes': [],
-                           \ 'passive_filetypes': ['txt', 'go'] }
+                           \ 'passive_filetypes': ['txt', 'go', 'javascript', 'jsx'] }
  
 " npm install -g eslint
 let g:syntastic_javascript_checkers = ['eslint']
