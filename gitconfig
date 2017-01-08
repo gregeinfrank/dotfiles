@@ -17,6 +17,7 @@
         br = branch
 	ci = commit -a
 	co = checkout
+        cob = "!git co -b $1 && git push -u origin"
 	dwc = diff -w -M --color-words
 	fix = rebase -i origin/master
         new = !sh -c 'git log $1@{1}..$1@{0} "$@"'
@@ -31,7 +32,9 @@
         df = diff
         ds = diff --staged
         browse = "!hub browse"
-        delete-merged = "!git fetch origin && git branch -d $(git branch --merged | grep -v '*' | grep -v master)"
+        ;delete-merged = "!git fetch --prune && diff --new-line-format='' --unchanged-line-format='' <(git local-branches) <(git remote-branches | sed 's/^remotes\/origin\///') | xargs git branch -d"
+        remote-branches = "!git branch -l -a | grep --color=never 'remotes/origin' | tr -d '* '"
+        local-branches = "!git branch -l | tr -d '* '"
 [push]
 	default = current
 [merge]
@@ -40,3 +43,7 @@
 	ui = true
 [pull]
 	default = current
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	required = true

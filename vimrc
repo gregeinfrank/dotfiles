@@ -61,11 +61,11 @@ let g:miniBufExplMapCTabSwitchBufs = 1
 let g:miniBufExplModSelTarget = 1
 
 " cursorline only in active buffer
-augroup CursorLine
-  au!
-  au VimEnter,WinEnter,BufWinEnter * setlocal cursorline
-  au WinLeave * setlocal nocursorline
-augroup END
+" augroup CursorLine
+"   au!
+"   au VimEnter,WinEnter,BufWinEnter * setlocal cursorline
+"   au WinLeave * setlocal nocursorline
+" augroup END
 
 " Python
 autocmd FileType python set nosmartindent list shiftwidth=4 softtabstop=4
@@ -80,6 +80,10 @@ autocmd BufWritePre *.js :%s/\s\+$//e
 
 " Ruby
 autocmd FileType ruby set expandtab shiftwidth=2 softtabstop=2
+autocmd FileType ruby set nocursorline
+autocmd FileType ruby set regexpengine=1
+autocmd FileType ruby set re=1
+
 autocmd FileType yaml set expandtab shiftwidth=2 softtabstop=2
 
 " " Javascript / HTML / CSS
@@ -117,15 +121,32 @@ au BufRead,BufNewFile {*.less,*.sass} set ft=css
 au BufRead,BufNewFile *.us set ft=html "our underscore.js html templates
 au BufRead,BufNewFile {*.tfstate,*.tfstate.backup} set ft=json
 
+
+" https://github.com/junegunn/fzf
+" insalled via git
+set rtp+=~/.fzf
+" fzf.vim
+nmap <C-t> :Tags<CR>
+" nmap <C-[> :Tags<CR>
+" nmap <Leader>t :execute "Tags " expand('<cword>')<CR>
+
+" ctags
+" need to brew install ctags
+nmap <Leader>cc :!(test -f ./ctags.sh && ./ctags.sh) \|\|  (test -f ./bin/ctags.sh && ./bin/ctags.sh) \|\| echo 'no ./ctags.sh or ./bin/ctags.sh found'<CR>
+
+" Not using ctrlp anymore - but might want to add these to fzf ignore
+" let g:ctrlp_custom_ignore = {
+"   \ 'dir':  '\v[\/](\.git|node_modules|compiled_site|dist)$',
+"   \ 'file': '\v\.(exe|so|dll|pyc|yaml)$',
+"   \ }
+
 " don't show binary files in list of files to open
 set wildignore+=*.pyc,node_modules/**
-let g:ctrlp_custom_ignore = {
-  \ 'dir':  '\v[\/](\.git|node_modules|compiled_site|dist)$',
-  \ 'file': '\v\.(exe|so|dll|pyc|yaml)$',
-  \ }
 let NERDTreeIgnore=[ '\.pyc$', '\.pyo$', '\.db$' ]
 autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+
+" Auto-open nerdtree if no file was selected
+" autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 
 " fix backspace in vim 7
 :set backspace=indent,eol,start
@@ -183,22 +204,28 @@ nnoremap ,w :NERDTreeToggle<CR>
 " set statusline+=%{SyntasticStatuslineFlag()}
 " set statusline+=%*
 " let g:syntastic_disable=['py']
-let g:syntastic_enable_signs=0 "sign markings (at beginning of line, before line numbers)
+let g:syntastic_enable_signs=1 "sign markings (at beginning of line, before line numbers)
 let g:syntastic_enable_highlighting=2
 let g:syntastic_auto_loc_list=0
-let g:syntastic_check_on_open=1
+let g:syntastic_check_on_open=0 " 1 makes files open really slowly
 " mode info
 let g:syntastic_mode_map = { 'mode': 'active',
-                           \ 'active_filetypes': [],
-                           \ 'passive_filetypes': ['txt', 'go', 'javascript', 'jsx'] }
+                           \ 'active_filetypes': ['js', 'javascript', 'jsx'],
+                           \ 'passive_filetypes': ['txt', 'go'] }
  
 " npm install -g eslint
 let g:syntastic_javascript_checkers = ['eslint']
 let g:syntastic_ruby_checkers = ["mri", "rubocop"]
+let g:syntastic_error_symbol = '🚫'
+let g:syntastic_style_error_symbol = '👺'
+let g:syntastic_warning_symbol = '✋'
+let g:syntastic_style_warning_symbol = '💩'
 
 
 " key shortcuts
-nmap <Ctrl>P ::CtrlPClearCache<CR>
+" nmap <Ctrl>P ::CtrlPClearCache<CR>
+" Map ctrl + p to fzf fuzzy matcher
+nmap <C-p> :FZF<cr>
 nmap ,e :SyntasticCheck<CR> :Errors<CR>
 nmap ,R :!!<CR>
 autocmd FileType ruby :nnoremap ,b obinding.pry<ESC>
@@ -221,6 +248,11 @@ autocmd FileType python map <Leader>rf :call VimuxRunNoseLine()<CR>
 autocmd FileType ruby  map <Leader>ra :call VimuxRunCommand("rspec")<CR>
 autocmd FileType ruby  map <Leader>rF :RunAllRubyTests<CR>
 autocmd FileType ruby  map <Leader>rf :RunRubyFocusedTest<CR>
+autocmd FileType ruby  map <Leader>rl :call VimuxRunCommand("clear; RSPEC_CLEAN_WITH_DELETION=1 RSPEC_TRUNCATE_AFTER_SUITE=1 RSPEC_SKIP_ELASTICSEARCH_SETUP=1 ./bin/rspec " . expand("%.") . ":" . line("."))<CR>
+
+autocmd FileType javascript map <Leader>rf :call VimuxRunCommand("clear; ./dev-scripts/karma-run-line-number.sh " . expand("%.") . ":" . line("."))<CR>
+autocmd FileType javascript map <Leader>ra :call VimuxRunCommand("clear; $NODE_PATH/karma/bin/karma run -- --grep=")<CR>
+" xvfb-run $NODE_PATH/karma/bin/karma start --single-run=false
 
 " Disables swap files
 set noswapfile
@@ -258,13 +290,13 @@ else
     let gitdir = gitdir[:-2]
 endif
 
-let pythoncmd = "python -c 'import os.path; print os.path.relpath(\"" . gitdir . "\")'"
-let relgitdir = system(pythoncmd)[:-2]
+" let pythoncmd = "python -c 'import os.path; print os.path.relpath(\"" . gitdir . "\")'"
+" let relgitdir = system(pythoncmd)[:-2]
 
 " grep word under cursor
-set grepprg=ack
-nnoremap <leader>l :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
-execute "nnoremap <leader>f :grep! \"\\b<C-R><C-W>\\b\" " . relgitdir . "<CR>:cw<CR>"
+" set grepprg=ack
+" nnoremap <leader>l :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
+" execute "nnoremap <leader>f :grep! \"\\b<C-R><C-W>\\b\" " . relgitdir . "<CR>:cw<CR>"
 
 " python-mode (pymode)
 let g:pymode_folding = 0

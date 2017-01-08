@@ -12,7 +12,7 @@ HISTSIZE=100000
 ###
 # the classic MySQL library path fix for OSX  (un-comment if installing mysql)
 # export LD_LIBRARY_PATH=/usr/local/mysql-5.5.19-osx10.6-x86_64/lib
-export PATH=/usr/local/bin:$PATH:/usr/local/sbin:/usr/local/mysql/bin:/usr/local/share/npm/bin:~/.ec2/bin
+export PATH=/usr/local/bin:$PATH:/usr/local/sbin:/usr/local/mysql/bin:/usr/local/share/npm/bin:~/.ec2/bin:~/code/arcanist/bin/
 
 # VirtualEnvWrapper
 export WORKON_HOME=~/virtualenvs
@@ -23,6 +23,10 @@ if which rbenv > /dev/null; then eval "$(rbenv init -)"; else echo rbenv not ins
 
 # pyenv
 if which pyenv > /dev/null; then eval "$(pyenv init -)"; else echo pyenv not installed; fi
+
+# fzf (fuzzy file finder) option for vim - use ag as search source (which ignores .gitignore and .agignore files)
+# Install ag with brew install the_silver_searcher
+export FZF_DEFAULT_COMMAND='ag -U --hidden --ignore .git -g ""'
 
 # brew bash completion
 if [ -f `brew --prefix`/etc/bash_completion ]; then
@@ -45,11 +49,16 @@ eval "$(thefuck --alias)"
 
 
 # Fin aliases
-alias fcore='cd ~/code/fin/fin-core-beta'
-alias dockizzle='cd ~/code/fin/fin-core-beta && ./dev-scripts/docker-shell.sh'
+export FIN_HOME=~/code/fin/fin-core-beta
+export FINFRASTRUCTURE_HOME=$HOME/code/fin/finfrastructure
+alias fcore='cd $FIN_HOME'
+alias dockizzle='cd $FIN_HOME && ./dev-scripts/docker-shell.sh'
+alias dk='docker-compose'
+alias dlogs='docker-compose logs -f --tail=50'
 alias finfrastructure='cd ~/code/fin/finfrastructure'
 alias fios='cd ~/code/fin/fin-ios'
 eval "$(hub alias -s)"
+
 
 # Mave aliases
 alias infrastructure='cd ~/code/mave/infrastructure'
@@ -85,6 +94,10 @@ gsd () {
 
 if [ -f `brew --prefix`/etc/bash_completion.d/vagrant ]; then
     source `brew --prefix`/etc/bash_completion.d/vagrant
+fi
+
+if ! [ -f /usr/local/etc/bash_completion.d/rake ]; then
+    curl -o /usr/local/etc/bash_completion.d/rake https://raw.githubusercontent.com/ai/rake-completion/master/rake
 fi
 
 if [ -f ~/.git-completion.bash ]; then
@@ -180,3 +193,6 @@ openx() {
 alias ox=openx
 
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
+
+# added by Anaconda3 4.2.0 installer
+export PATH="//anaconda/bin:$PATH"
