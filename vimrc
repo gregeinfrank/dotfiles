@@ -13,6 +13,37 @@ syntax enable
 " set background=dark
 " colorscheme solarized
 " colorscheme Tomorrow-Night
+
+call plug#begin('~/.vim/plugged')
+
+Plug 'Lokaltog/vim-easymotion'
+Plug 'aghareza/vim-gitgrep'
+Plug 'altercation/vim-colors-solarized'
+Plug 'b4b4r07/vim-hcl'
+Plug 'benmills/vimux'
+Plug 'christoomey/vim-tmux-navigator'
+Plug 'dcosson/vim-powerline'
+Plug 'dcosson/vimux-nose-test2'
+Plug 'gregeinfrank/tomorrow-night-dcosson.vim'
+Plug 'jlanzarotta/bufexplorer'
+Plug 'junegunn/fzf.vim'
+Plug 'milkypostman/vim-togglelist'
+Plug 'mxw/vim-jsx'
+Plug 'mxw/vim-jsx'
+Plug 'nvie/vim-flake8'
+Plug 'nvie/vim-pep8'
+Plug 'pgr0ss/vimux-ruby-test'
+Plug 'puppetlabs/puppet-syntax-vim'
+Plug 'scrooloose/nerdtree'
+Plug 'scrooloose/syntastic'
+Plug 'tomtom/tcomment_vim'
+Plug 'tpope/vim-endwise'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-unimpaired'
+
+call plug#end()
+
 colorscheme tomorrow-night-dcosson
 
 "Simple switching between hard tabs and spaces
@@ -70,7 +101,6 @@ let g:miniBufExplModSelTarget = 1
 " Python
 autocmd FileType python set nosmartindent list shiftwidth=4 softtabstop=4
 autocmd FileType python set omnifunc=pythoncomplete#Complete
-let g:pydiction_location = '~/.vim/bundle/pydiction/complete-dict'
 autocmd FileType python nmap ,8 :call Pep8()<CR>
 
 "" auto-remove trailing whitespace
