@@ -31,16 +31,15 @@ Plug 'milkypostman/vim-togglelist'
 Plug 'mxw/vim-jsx'
 Plug 'mxw/vim-jsx'
 Plug 'nvie/vim-flake8'
-Plug 'nvie/vim-pep8'
 Plug 'pgr0ss/vimux-ruby-test'
 Plug 'puppetlabs/puppet-syntax-vim'
 Plug 'scrooloose/nerdtree'
-Plug 'scrooloose/syntastic'
 Plug 'tomtom/tcomment_vim'
 Plug 'tpope/vim-endwise'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
+Plug 'w0rp/ale'
 
 call plug#end()
 
@@ -101,7 +100,7 @@ let g:miniBufExplModSelTarget = 1
 " Python
 autocmd FileType python set nosmartindent list shiftwidth=4 softtabstop=4
 autocmd FileType python set omnifunc=pythoncomplete#Complete
-autocmd FileType python nmap ,8 :call Pep8()<CR>
+autocmd FileType python nmap ,8 :call Flake8()<CR>
 
 "" auto-remove trailing whitespace
 autocmd BufWritePre *.py :%s/\s\+$//e
@@ -222,41 +221,26 @@ endif
 
 " Open useful sidebars (taglist, nerdtree)
 nnoremap ,w :NERDTreeToggle<CR>
+nnoremap ,nf :NERDTreeFind<CR>
 
 " ctrl-J to split/break a line in normal mode (opposite of shift+j)
 :nnoremap <NL> i<CR><ESC>
 
 """
-""" Syntastic syntax checking 
+""" ALE syntax checking
 """
-" status line
-" set statusline+=%#warningmsg#
-" set statusline+=%{SyntasticStatuslineFlag()}
-" set statusline+=%*
-" let g:syntastic_disable=['py']
-let g:syntastic_enable_signs=1 "sign markings (at beginning of line, before line numbers)
-let g:syntastic_enable_highlighting=2
-let g:syntastic_auto_loc_list=0
-let g:syntastic_check_on_open=0 " 1 makes files open really slowly
-" mode info
-let g:syntastic_mode_map = { 'mode': 'active',
-                           \ 'active_filetypes': ['js', 'javascript', 'jsx'],
-                           \ 'passive_filetypes': ['txt', 'go'] }
- 
-" npm install -g eslint
-let g:syntastic_javascript_checkers = ['eslint']
-let g:syntastic_ruby_checkers = ["mri", "rubocop"]
-let g:syntastic_error_symbol = '🚫'
-let g:syntastic_style_error_symbol = '👺'
-let g:syntastic_warning_symbol = '✋'
-let g:syntastic_style_warning_symbol = '💩'
+let g:ale_sign_column_always = 1
+let g:ale_sign_warning = '✋'
+let g:ale_sign_error = '🚫'
+"
+" If we want to only run on save, open
+" let g:ale_lint_on_text_changed = 'never'
 
 
 " key shortcuts
 " nmap <Ctrl>P ::CtrlPClearCache<CR>
 " Map ctrl + p to fzf fuzzy matcher
 nmap <C-p> :FZF<cr>
-nmap ,e :SyntasticCheck<CR> :Errors<CR>
 nmap ,R :!!<CR>
 autocmd FileType ruby :nnoremap ,b obinding.pry<ESC>
 
