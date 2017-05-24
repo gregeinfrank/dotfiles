@@ -29,17 +29,19 @@ Plug 'jlanzarotta/bufexplorer'
 Plug 'junegunn/fzf.vim'
 Plug 'milkypostman/vim-togglelist'
 Plug 'mxw/vim-jsx'
-Plug 'mxw/vim-jsx'
 Plug 'nvie/vim-flake8'
+Plug 'pangloss/vim-javascript'
 Plug 'pgr0ss/vimux-ruby-test'
 Plug 'puppetlabs/puppet-syntax-vim'
 Plug 'scrooloose/nerdtree'
+Plug 'sbdchd/neoformat'
 Plug 'tomtom/tcomment_vim'
+Plug 'tpope/vim-abolish'
 Plug 'tpope/vim-endwise'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
-Plug 'w0rp/ale'
+Plug 'dcosson/ale'
 
 call plug#end()
 
@@ -150,6 +152,13 @@ au BufRead,BufNewFile {*.less,*.sass} set ft=css
 au BufRead,BufNewFile *.us set ft=html "our underscore.js html templates
 au BufRead,BufNewFile {*.tfstate,*.tfstate.backup} set ft=json
 
+" Prettier.js
+autocmd FileType javascript setlocal formatprg=prettier\ --single-quote\ --jsx-bracket-same-line\ --parser\ babylon\ --trailing-comma\ es5
+let g:neoformat_try_formatprg = 1
+autocmd InsertLeave *.js Neoformat
+
+" vim-javascript syntax highlighting
+let g:javascript_plugin_flow = 1
 
 " https://github.com/junegunn/fzf
 " insalled via git
@@ -227,12 +236,34 @@ nnoremap ,nf :NERDTreeFind<CR>
 :nnoremap <NL> i<CR><ESC>
 
 """
+""" Abolish
+"""
+au bufenter * Abolish {despa,sepe}rat{e,es,ed,ing,ely,ion,ions,or}  {despe,sepa}rat{}
+au bufenter * Abolish {ocur}ence{s,} {occurr}ence{}
+au bufenter * Abolish {dashbao}rd {dashboa}rd
+au bufenter * Abolish {privel}ege {privil}ege
+au bufenter * Abolish reduct{ino} reduct{ion}
+au bufenter * Abolish {respno}se {respon}se
+
+"""
 """ ALE syntax checking
 """
 let g:ale_sign_column_always = 1
 let g:ale_sign_warning = '✋'
 let g:ale_sign_error = '🚫'
-"
+let g:ale_echo_msg_error_str = 'E'
+let g:ale_echo_msg_warning_str = 'W'
+let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+let g:ale_linters = {
+\   'javascript': ['eslint', 'flow'],
+\   'python': ['flake8'],
+\   'ruby': ['ruby'],
+\   'hcl': [],
+\}
+let g:ale_javascript_flow_executable = './dev-scripts/flow-proxy.sh'
+let g:ale_javascript_flow_use_relative_paths = 1
+"" Only lint on save or when switching back to normal mode, not every keystroke in insert mode
+let g:ale_lint_on_text_changed = 'normal'
 " If we want to only run on save, open
 " let g:ale_lint_on_text_changed = 'never'
 
