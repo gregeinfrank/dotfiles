@@ -20,10 +20,12 @@ Plug 'Lokaltog/vim-easymotion'
 Plug 'aghareza/vim-gitgrep'
 Plug 'altercation/vim-colors-solarized'
 Plug 'b4b4r07/vim-hcl'
+Plug 'bogado/file-line'
 Plug 'benmills/vimux'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'dcosson/vim-powerline'
 Plug 'dcosson/vimux-nose-test2'
+" Plug 'flowtype/vim-flow'
 Plug 'gregeinfrank/tomorrow-night-dcosson.vim'
 Plug 'jlanzarotta/bufexplorer'
 Plug 'junegunn/fzf.vim'
@@ -33,15 +35,15 @@ Plug 'nvie/vim-flake8'
 Plug 'pangloss/vim-javascript'
 Plug 'pgr0ss/vimux-ruby-test'
 Plug 'puppetlabs/puppet-syntax-vim'
+Plug 'rdolgushin/groovy.vim'
 Plug 'scrooloose/nerdtree'
-Plug 'sbdchd/neoformat'
 Plug 'tomtom/tcomment_vim'
 Plug 'tpope/vim-abolish'
 Plug 'tpope/vim-endwise'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
-Plug 'dcosson/ale'
+Plug 'w0rp/ale'
 
 call plug#end()
 
@@ -66,7 +68,7 @@ set showcmd
 set ai " Automatically set the indent of a new line (local to buffer)
 set tags=./tags;
 
-"" Searching
+"" searching
 set hlsearch    " highlight matches
 set incsearch   " incremental searching
 set ignorecase  " searches are case insensitive...
@@ -152,10 +154,24 @@ au BufRead,BufNewFile {*.less,*.sass} set ft=css
 au BufRead,BufNewFile *.us set ft=html "our underscore.js html templates
 au BufRead,BufNewFile {*.tfstate,*.tfstate.backup} set ft=json
 
-" Prettier.js
-autocmd FileType javascript setlocal formatprg=prettier\ --single-quote\ --jsx-bracket-same-line\ --parser\ babylon\ --trailing-comma\ es5
-let g:neoformat_try_formatprg = 1
-autocmd InsertLeave *.js Neoformat
+" " Prettier.js
+" " autocmd BufWritePre *.js %! prettier --single-quote --jsx-bracket-same-line --parser babylon --trailing-comma es5 --print-width 100
+"
+" autocmd FileType javascript setlocal formatprg=prettier\ --write\ --single-quote\ --jsx-bracket-same-line\ --parser\ babylon\ --trailing-comma\ es5\ --print-width\ 100
+" function FormatPrettierJs()
+"     let l:wv = winsaveview()
+"     " ↓ this will call formatprg on the entire buffer ↓
+"     silent exe "normal gggqG"
+"     " If there was an error, undo replacing the entire buffer
+"     if v:shell_error
+"         undo
+"     endif
+"     call winrestview(l:wv)
+"     redraw
+"     " Old way was to run the buffer through a filter ↓
+" endfunction
+" Run prettier on save (with Fin flags)
+" autocmd BufWritePre *.js,*.jsx call FormatPrettierJs()
 
 " vim-javascript syntax highlighting
 let g:javascript_plugin_flow = 1
@@ -232,9 +248,6 @@ endif
 nnoremap ,w :NERDTreeToggle<CR>
 nnoremap ,nf :NERDTreeFind<CR>
 
-" ctrl-J to split/break a line in normal mode (opposite of shift+j)
-:nnoremap <NL> i<CR><ESC>
-
 """
 """ Abolish
 """
@@ -244,29 +257,46 @@ au bufenter * Abolish {dashbao}rd {dashboa}rd
 au bufenter * Abolish {privel}ege {privil}ege
 au bufenter * Abolish reduct{ino} reduct{ion}
 au bufenter * Abolish {respno}se {respon}se
+au bufenter * Abolish {resposn}e {respons}e
+" au bufenter * Abolish *{search}* *{search}*
+" au bufenter *.rb :%S/saerch/search/g
+" au bufenter *.js :%S/saerch/search/g
+
 
 """
 """ ALE syntax checking
 """
+let g:ale_enabled = 1
+" visual options
 let g:ale_sign_column_always = 1
 let g:ale_sign_warning = '✋'
 let g:ale_sign_error = '🚫'
 let g:ale_echo_msg_error_str = 'E'
 let g:ale_echo_msg_warning_str = 'W'
 let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+
+" Linting options
 let g:ale_linters = {
 \   'javascript': ['eslint', 'flow'],
+\   'jsx': ['eslint', 'flow'],
 \   'python': ['flake8'],
-\   'ruby': ['ruby'],
+\   'ruby': ['ruby', 'rubocop'],
 \   'hcl': [],
 \}
-let g:ale_javascript_flow_executable = './dev-scripts/flow-proxy.sh'
-let g:ale_javascript_flow_use_relative_paths = 1
-"" Only lint on save or when switching back to normal mode, not every keystroke in insert mode
+" Only lint on save or when switching back to normal mode, not every keystroke in insert mode
 let g:ale_lint_on_text_changed = 'normal'
-" If we want to only run on save, open
-" let g:ale_lint_on_text_changed = 'never'
 
+" Fixer options
+let g:ale_fixers = {
+\   'javascript': ['prettier', 'remove_trailing_lines'],
+\   'ruby': ['rubocop', 'remove_trailing_lines'],
+\}
+let g:ale_fix_on_save = 1
+
+" language-specific options
+let g:ale_javascript_prettier_options = ' --parser babylon --single-quote --jsx-bracket-same-line --trailing-comma es5 --print-width 100'
+let g:ale_javascript_flow_executable = './dev-scripts/flow-proxy.sh'
+let g:ale_ruby_rubocop_options = ' -P '
 
 " key shortcuts
 " nmap <Ctrl>P ::CtrlPClearCache<CR>
@@ -276,7 +306,7 @@ nmap ,R :!!<CR>
 autocmd FileType ruby :nnoremap ,b obinding.pry<ESC>
 
 " --- Vimux commands to run tests
-let g:vimux_nose_setup_cmd="cd ~/code/fin/fin-core-beta; ./dev-scripts/docker-shell.sh"
+let g:vimux_nose_setup_cmd="cd ~/code/fin/fin-core-beta; dockizzle"
 let g:vimux_nose_options="--nologcapture"
 let g:vimux_ruby_cmd_unit_test = "rspec"
 let g:vimux_ruby_file_relative_paths = 1
@@ -293,10 +323,10 @@ autocmd FileType python map <Leader>rf :call VimuxRunNoseLine()<CR>
 autocmd FileType ruby  map <Leader>ra :call VimuxRunCommand("rspec")<CR>
 autocmd FileType ruby  map <Leader>rF :RunAllRubyTests<CR>
 autocmd FileType ruby  map <Leader>rf :RunRubyFocusedTest<CR>
-autocmd FileType ruby  map <Leader>rl :call VimuxRunCommand("clear; RSPEC_CLEAN_WITH_DELETION=1 RSPEC_TRUNCATE_AFTER_SUITE=1 RSPEC_SKIP_ELASTICSEARCH_SETUP=1 ./bin/rspec " . expand("%.") . ":" . line("."))<CR>
+autocmd FileType ruby  map <Leader>rl :call VimuxRunCommand("clear; RSPEC_CLEAN_WITH_DELETION=1 RSPEC_TRUNCATE_AFTER_SUITE=1 RSPEC_SKIP_ELASTICsearch_SETUP=1 ./bin/rspec " . expand("%.") . ":" . line("."))<CR>
 
 autocmd FileType javascript map <Leader>rf :call VimuxRunCommand("clear; ./dev-scripts/karma-run-line-number.sh " . expand("%.") . ":" . line("."))<CR>
-autocmd FileType javascript map <Leader>ra :call VimuxRunCommand("clear; $NODE_PATH/karma/bin/karma run -- --grep=")<CR>
+autocmd FileType javascript map <Leader>ra :call VimuxRunCommand("clear; ./node_modules/karma/bin/karma run -- --grep=")<CR>
 " xvfb-run $NODE_PATH/karma/bin/karma start --single-run=false
 
 " Disables swap files
