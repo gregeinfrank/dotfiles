@@ -1,2 +1,4 @@
 .netrwhist
 .DS_Store
+vim/backups
+vim/plugged
