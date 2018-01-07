@@ -154,25 +154,6 @@ au BufRead,BufNewFile {*.less,*.sass} set ft=css
 au BufRead,BufNewFile *.us set ft=html "our underscore.js html templates
 au BufRead,BufNewFile {*.tfstate,*.tfstate.backup} set ft=json
 
-" " Prettier.js
-" " autocmd BufWritePre *.js %! prettier --single-quote --jsx-bracket-same-line --parser babylon --trailing-comma es5 --print-width 100
-"
-" autocmd FileType javascript setlocal formatprg=prettier\ --write\ --single-quote\ --jsx-bracket-same-line\ --parser\ babylon\ --trailing-comma\ es5\ --print-width\ 100
-" function FormatPrettierJs()
-"     let l:wv = winsaveview()
-"     " ↓ this will call formatprg on the entire buffer ↓
-"     silent exe "normal gggqG"
-"     " If there was an error, undo replacing the entire buffer
-"     if v:shell_error
-"         undo
-"     endif
-"     call winrestview(l:wv)
-"     redraw
-"     " Old way was to run the buffer through a filter ↓
-" endfunction
-" Run prettier on save (with Fin flags)
-" autocmd BufWritePre *.js,*.jsx call FormatPrettierJs()
-
 " vim-javascript syntax highlighting
 let g:javascript_plugin_flow = 1
 

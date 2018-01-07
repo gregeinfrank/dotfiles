@@ -52,7 +52,7 @@ eval "$(thefuck --alias)"
 export FIN_HOME=~/code/fin/fin-core-beta
 export FINFRASTRUCTURE_HOME=$HOME/code/fin/finfrastructure
 alias fcore='cd $FIN_HOME'
-alias dockizzle='cd $FIN_HOME && ./dev-scripts/docker-shell.sh'
+alias dockizzle='cd $FIN_HOME && fd docker-shell fin.local'
 alias dk='docker-compose'
 alias dlogs='docker-compose logs -f --tail=50'
 alias finfrastructure='cd ~/code/fin/finfrastructure'
