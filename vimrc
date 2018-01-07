@@ -1,19 +1,3 @@
-" Pathogen
-set nocompatible
-filetype off " Pathogen needs to run before plugin indent on
-call pathogen#infect()
-call pathogen#helptags() " generate helptags for everything in 'runtimepath'
-filetype plugin indent on
-filetype on
-syntax enable
-" let g:solarized_termcolors=256
-" let g:solarized_termtrans=1
-" let g:solarized_contrast='high'
-" let g:solarized_visibility='normal'
-" set background=dark
-" colorscheme solarized
-" colorscheme Tomorrow-Night
-
 call plug#begin('~/.vim/plugged')
 
 Plug 'Lokaltog/vim-easymotion'
@@ -23,14 +7,15 @@ Plug 'b4b4r07/vim-hcl'
 Plug 'bogado/file-line'
 Plug 'benmills/vimux'
 Plug 'christoomey/vim-tmux-navigator'
-Plug 'dcosson/vim-powerline'
 Plug 'dcosson/vimux-nose-test2'
 " Plug 'flowtype/vim-flow'
 Plug 'gregeinfrank/tomorrow-night-dcosson.vim'
 Plug 'jlanzarotta/bufexplorer'
 Plug 'junegunn/fzf.vim'
+Plug 'kana/vim-textobj-user' " Required for vim-textobj-rubyblock
 Plug 'milkypostman/vim-togglelist'
 Plug 'mxw/vim-jsx'
+Plug 'nelstrom/vim-textobj-rubyblock'
 Plug 'nvie/vim-flake8'
 Plug 'pangloss/vim-javascript'
 Plug 'pgr0ss/vimux-ruby-test'
@@ -43,9 +28,29 @@ Plug 'tpope/vim-endwise'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
+Plug 'vim-airline/vim-airline'
 Plug 'w0rp/ale'
 
+
+" new - experimental
+Plug 'sjl/gundo.vim'
+Plug 'airblade/vim-gitgutter'
+
 call plug#end()
+
+let g:gundo_width = 50
+let g:gundo_preview_height = 15
+let g:gundo_right = 0
+let g:gundo_preview_bottom = 1
+
+" Required for vim-textobj-rubyblock
+runtime macros/matchit.vim
+" From https://github.com/nelstrom/vim-textobj-rubyblock:
+" It is also essential that you enable filetype plugins, and disable Vi compatible mode. Placing these lines in your vimrc file will do this:
+set nocompatible
+if has("autocmd")
+  filetype indent plugin on
+endif
 
 colorscheme tomorrow-night-dcosson
 
@@ -119,10 +124,15 @@ autocmd FileType ruby set re=1
 
 autocmd FileType yaml set expandtab shiftwidth=2 softtabstop=2
 
+" Groovy
+autocmd BufNewFile,BufRead Jenkinsfile set syntax=groovy
+
 " " Javascript / HTML / CSS
 " autocmd FileType javascript set expandtab shiftwidth=2 softtabstop=2
 " autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
 autocmd Filetype javascript setlocal ts=2 sts=2 sw=2
+let g:colorizer_auto_color = 0 " Auto-color hex strings
+let g:colorizer_auto_filetype='scss,css,html,json,javascript,js,erb'
 let g:jsx_ext_required = 0 " Allow JSX in normal JS files
 
 "" auto-remove trailing whitespace
@@ -161,6 +171,27 @@ let g:javascript_plugin_flow = 1
 " insalled via git
 set rtp+=~/.fzf
 " fzf.vim
+
+" --column: Show column number
+" --line-number: Show line number
+" --no-heading: Do not show file headings in results
+" --fixed-strings: Search term as a literal string
+" --ignore-case: Case insensitive search
+" --no-ignore: Do not respect .gitignore, etc...
+" --hidden: Search hidden files and folders
+" --follow: Follow symlinks
+" --glob: Additional conditions for search (in this case ignore everything in the .git/ folder)
+" --color: Search color options
+" command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>).'| tr -d "\017"', 1, <bang>0)
+command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --hidden --follow --color "always" '.shellescape(<q-args>), 1, <bang>0)
+nnoremap K :Find <C-R><C-W><CR>
+
+
+" easy motion
+map W <Plug>(easymotion-w)
+map B <Plug>(easymotion-b)
+map S <Plug>(easymotion-s)
+
 nmap <C-t> :Tags<CR>
 " nmap <C-[> :Tags<CR>
 " nmap <Leader>t :execute "Tags " expand('<cword>')<CR>
@@ -188,11 +219,9 @@ autocmd StdinReadPre * let s:std_in=1
 
 """ Clipboard
 " copy all to clipboard
-nmap ,a ggVG"*y
+nmap ,c ggVG"*y
 " copy word to clipboard
 nmap ,d "*yiw
-" copy highlighted to clipboard
-vmap ,c "*y
 " paste 
 nmap ,v :set paste<CR>"*p:set nopaste<CR>
 " underline current line, markdown style
@@ -211,6 +240,14 @@ nnoremap \r :e!<CR>
 "Easy edit of vimrc
 nmap \s :source $MYVIMRC<CR>
 nmap \v :e $MYVIMRC<CR>
+
+" Jump to ending brace/bracket/paren
+nnoremap <ENTER> $%
+" Allow <ENTER> to do it's thing in quickfix window
+autocmd BufReadPost quickfix nnoremap <buffer> <CR> <CR>
+
+" Jump to opening brace/bracket/paren
+nnoremap <BS> ^%
 
 " :runtime! ~/.vim/
 
@@ -250,6 +287,7 @@ au bufenter * Abolish {resposn}e {respons}e
 let g:ale_enabled = 1
 " visual options
 let g:ale_sign_column_always = 1
+let g:ale_change_sign_column_color = 0 " makes the whole left column red when there are errors
 let g:ale_sign_warning = '✋'
 let g:ale_sign_error = '🚫'
 let g:ale_echo_msg_error_str = 'E'
@@ -265,19 +303,30 @@ let g:ale_linters = {
 \   'hcl': [],
 \}
 " Only lint on save or when switching back to normal mode, not every keystroke in insert mode
-let g:ale_lint_on_text_changed = 'normal'
 
 " Fixer options
 let g:ale_fixers = {
-\   'javascript': ['prettier', 'remove_trailing_lines'],
+\   'javascript': ['eslint', 'prettier', 'remove_trailing_lines'],
 \   'ruby': ['rubocop', 'remove_trailing_lines'],
 \}
+" \   'python': ['add_blank_lines_for_python_control_statements', 'autopep8', 'isort', 'yapf'],
 let g:ale_fix_on_save = 1
+let g:ale_lint_on_save = 1
+let g:ale_lint_on_insert_leave = 1
+let g:ale_lint_on_text_changed = 'normal'
+
+nnoremap <leader>a :ALENextWrap<CR>
 
 " language-specific options
-let g:ale_javascript_prettier_options = ' --parser babylon --single-quote --jsx-bracket-same-line --trailing-comma es5 --print-width 100'
+" let g:ale_javascript_prettier_options = ' --parser babylon --single-quote --jsx-bracket-same-line --trailing-comma es5 --print-width 100'
+" let g:ale_javascript_prettier_options = ' --single-quote --jsx-bracket-same-line --parser babylon --trailing-comma es5 --print-width 100 '
+let g:ale_javascript_prettier_options = ' --config $FIN_HOME/.prettierrc '
+" let g:ale_javascript_prettier_options = ' '
+let g:ale_javascript_prettier_executable = '/usr/local/bin/prettier'
 let g:ale_javascript_flow_executable = './dev-scripts/flow-proxy.sh'
-let g:ale_ruby_rubocop_options = ' -P '
+" let g:ale_ruby_rubocop_options = ' -P '
+
+let g:flow#enabled = 0
 
 " key shortcuts
 " nmap <Ctrl>P ::CtrlPClearCache<CR>
@@ -285,6 +334,9 @@ let g:ale_ruby_rubocop_options = ' -P '
 nmap <C-p> :FZF<cr>
 nmap ,R :!!<CR>
 autocmd FileType ruby :nnoremap ,b obinding.pry<ESC>
+autocmd FileType ruby :nnoremap \b obinding.pry<ESC>
+autocmd FileType javascript :nnoremap ,b o/* eslint-disable */<ENTER>debugger;<ENTER>/* eslint-enable */<ESC>
+autocmd FileType javascript :nnoremap \b o/* eslint-disable */<ENTER>debugger;<ENTER>/* eslint-enable */<ESC>
 
 " --- Vimux commands to run tests
 let g:vimux_nose_setup_cmd="cd ~/code/fin/fin-core-beta; dockizzle"
@@ -307,8 +359,14 @@ autocmd FileType ruby  map <Leader>rf :RunRubyFocusedTest<CR>
 autocmd FileType ruby  map <Leader>rl :call VimuxRunCommand("clear; RSPEC_CLEAN_WITH_DELETION=1 RSPEC_TRUNCATE_AFTER_SUITE=1 RSPEC_SKIP_ELASTICsearch_SETUP=1 ./bin/rspec " . expand("%.") . ":" . line("."))<CR>
 
 autocmd FileType javascript map <Leader>rf :call VimuxRunCommand("clear; ./dev-scripts/karma-run-line-number.sh " . expand("%.") . ":" . line("."))<CR>
-autocmd FileType javascript map <Leader>ra :call VimuxRunCommand("clear; ./node_modules/karma/bin/karma run -- --grep=")<CR>
+
+" ↓ use jest runner:
+autocmd FileType javascript map <buffer> <Leader>rl :call VimuxRunCommand("clear; ./dev-scripts/jest-run-focused-test.sh " . expand("%.") . ":" . line("."))<CR>
+
 " xvfb-run $NODE_PATH/karma/bin/karma start --single-run=false
+autocmd FileType javascript map <Leader>ra :call VimuxRunCommand("clear; ./node_modules/karma/bin/karma run -- --grep=")<CR>
+" ↓ use jest runner:
+autocmd FileType javascript map <buffer> <Leader>rb :call VimuxRunCommand("clear; ./dev-scripts/jest-run-focused-test.sh " . expand("%."))<CR>
 
 " Disables swap files
 set noswapfile
@@ -378,3 +436,31 @@ noremap <expr> <C-d> repeat("\<C-e>", 20)
 set so=7
 
 au BufRead *.spt set ft=python
+
+" See: https://medium.com/usevim/powerline-escape-fix-e849fd07aad0
+" make Esc happen without waiting for timeoutlen
+" fixes Powerline delay
+augroup FastEscape
+  autocmd!
+  au InsertEnter * set timeoutlen=0
+  au InsertLeave * set timeoutlen=1000
+augroup END
+
+" quick profiling for when vim is slow
+function! ProfileStart()
+  let s:profilestart = 'profile start vim-profile-' . strftime("%y-%m-%d-%H%M%S") . '.log'
+  exec s:profilestart
+  profile func *
+  profile file *
+endfunction
+
+function! ProfileEnd()
+  profile pause
+  noautocmd qall!
+endfunction
+
+command! -nargs=0 ProfileStart :call ProfileStart()
+command! -nargs=0 ProfileEnd :call ProfileEnd()
+
+let loaded_matchparen = 0
+
