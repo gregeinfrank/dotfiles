@@ -2,7 +2,7 @@ call plug#begin('~/.vim/plugged')
 
 Plug 'Lokaltog/vim-easymotion'
 Plug 'aghareza/vim-gitgrep'
-Plug 'altercation/vim-colors-solarized'
+" Plug 'altercation/vim-colors-solarized'
 Plug 'b4b4r07/vim-hcl'
 Plug 'bogado/file-line'
 Plug 'benmills/vimux'
@@ -21,6 +21,7 @@ Plug 'pangloss/vim-javascript'
 Plug 'pgr0ss/vimux-ruby-test'
 Plug 'puppetlabs/puppet-syntax-vim'
 Plug 'rdolgushin/groovy.vim'
+Plug 'ruanyl/vim-gh-line'
 Plug 'scrooloose/nerdtree'
 Plug 'tomtom/tcomment_vim'
 Plug 'tpope/vim-abolish'
@@ -288,8 +289,10 @@ let g:ale_enabled = 1
 " visual options
 let g:ale_sign_column_always = 1
 let g:ale_change_sign_column_color = 0 " makes the whole left column red when there are errors
-let g:ale_sign_warning = '✋'
-let g:ale_sign_error = '🚫'
+" let g:ale_sign_warning = '✋'
+let g:ale_sign_warning = 'W'
+" let g:ale_sign_error = '🚫'
+let g:ale_sign_error = 'E'
 let g:ale_echo_msg_error_str = 'E'
 let g:ale_echo_msg_warning_str = 'W'
 let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
@@ -318,11 +321,13 @@ let g:ale_lint_on_text_changed = 'normal'
 nnoremap <leader>a :ALENextWrap<CR>
 
 " language-specific options
-" let g:ale_javascript_prettier_options = ' --parser babylon --single-quote --jsx-bracket-same-line --trailing-comma es5 --print-width 100'
-" let g:ale_javascript_prettier_options = ' --single-quote --jsx-bracket-same-line --parser babylon --trailing-comma es5 --print-width 100 '
+
+" This is for using `prettier`
 let g:ale_javascript_prettier_options = ' --config $FIN_HOME/.prettierrc '
-" let g:ale_javascript_prettier_options = ' '
-let g:ale_javascript_prettier_executable = '/usr/local/bin/prettier'
+" This is for using `prettier_d`
+let g:ale_javascript_prettier_options = ' --pkg-conf --fallback '
+
+" let g:ale_javascript_prettier_executable = '/usr/local/bin/prettier'
 let g:ale_javascript_flow_executable = './dev-scripts/flow-proxy.sh'
 " let g:ale_ruby_rubocop_options = ' -P '
 
