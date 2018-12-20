@@ -106,9 +106,6 @@ if [ -f `brew --prefix`/bin/aws_completer ]; then
 complete -C aws_completer aws
 fi
 
-# fuck
-eval "$(thefuck --alias)"
-
 # EC2 Command Line Tools - not really using recently
 # export JAVA_HOME="`/usr/libexec/java_home -v 1.6`"
 # export EC2_PRIVATE_KEY="$(/bin/ls $HOME/.ec2/pk-*.pem)"
@@ -117,15 +114,16 @@ eval "$(thefuck --alias)"
 
 
 # Fin aliases
-export FIN_HOME=~/code/fin/fin-core-beta
-export FINFRASTRUCTURE_HOME=$HOME/code/fin/finfrastructure
+export FIN_HOME=~/code/fin-core-beta
+export FINFRASTRUCTURE_HOME=$HOME/code/finfrastructure
 alias fcore='cd $FIN_HOME'
 alias dockizzle='cd $FIN_HOME && fd docker-shell rails'
 alias dk='docker-compose'
-alias dlogs='docker-compose logs -f --tail=50'
-alias finfrastructure='cd ~/code/fin/finfrastructure'
+alias dlogs='fd docker-logs'
+alias finfrastructure='cd ~/code/finfrastructure'
 alias fios='cd ~/code/fin/fin-ios'
 eval "$(hub alias -s)"
+alias vim=/usr/local/Cellar/vim/8.1.0400/bin/vim
 
 
 # Mave aliases
@@ -179,6 +177,8 @@ source_if_exists "$HOME/.bash_profile_aws"
 source_if_exists "$HOME/.bash_profile_fin"
 source_if_exists "$HOME/.bash_profile_hockeyapp"
 source_if_exists "$HOME/.fzf.bash"
+source_if_exists ~/.iterm2_shell_integration.bash # iTerm2 > Install Shell Integration (with Utilities)
+
 
 ### nosecomplete
 # copied from newer versions of bash
@@ -252,3 +252,6 @@ openx() {
 alias ox=openx
 
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
+
+test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"
+

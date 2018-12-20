@@ -59,6 +59,8 @@ function __prompt_command() {
   PS1+="\n"
   # pwd, git branch and prompt
   PS1+="${txtpurple}\$PWD${txtend} ${txtwhite}\$(parse_git_branch)$ "
+  PS1+='\[$(~/.iterm2/it2setkeylabel set status \
+"$(parse_git_branch)")\]'
 }
 export PROMPT_COMMAND=__prompt_command
 

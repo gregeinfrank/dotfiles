@@ -2,25 +2,35 @@ call plug#begin('~/.vim/plugged')
 
 Plug 'Lokaltog/vim-easymotion'
 Plug 'aghareza/vim-gitgrep'
+Plug 'andymass/vim-matchup'
 " Plug 'altercation/vim-colors-solarized'
 Plug 'b4b4r07/vim-hcl'
 Plug 'bogado/file-line'
 Plug 'benmills/vimux'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'dcosson/vimux-nose-test2'
+Plug 'ervandew/supertab'
+Plug 'itchyny/lightline.vim'
 " Plug 'flowtype/vim-flow'
+Plug 'galooshi/vim-import-js' " First you need to `npm install -g import-js`
 Plug 'gregeinfrank/tomorrow-night-dcosson.vim'
 Plug 'jlanzarotta/bufexplorer'
+Plug '/usr/local/opt/fzf' " first you need to `brew install fzf`
 Plug 'junegunn/fzf.vim'
-Plug 'kana/vim-textobj-user' " Required for vim-textobj-rubyblock
+" Plug 'kana/vim-textobj-user' " Required for vim-textobj-rubyblock
+Plug 'maximbaz/lightline-ale'
 Plug 'milkypostman/vim-togglelist'
 Plug 'mxw/vim-jsx'
-Plug 'nelstrom/vim-textobj-rubyblock'
+" Plug 'nelstrom/vim-textobj-rubyblock'
 Plug 'nvie/vim-flake8'
 Plug 'pangloss/vim-javascript'
 Plug 'pgr0ss/vimux-ruby-test'
 Plug 'puppetlabs/puppet-syntax-vim'
 Plug 'rdolgushin/groovy.vim'
+Plug 'rhysd/vim-fixjson'
+Plug 'roxma/vim-hug-neovim-rpc' " For deoplete
+Plug 'roxma/nvim-yarp' " For deoplete
+Plug 'Shougo/deoplete.nvim'
 Plug 'ruanyl/vim-gh-line'
 Plug 'scrooloose/nerdtree'
 Plug 'tomtom/tcomment_vim'
@@ -29,7 +39,8 @@ Plug 'tpope/vim-endwise'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
-Plug 'vim-airline/vim-airline'
+" Plug 'vim-airline/vim-airline'
+Plug 'wellle/tmux-complete.vim'
 Plug 'w0rp/ale'
 
 
@@ -39,13 +50,19 @@ Plug 'airblade/vim-gitgutter'
 
 call plug#end()
 
+let g:deoplete#enable_at_startup = 1
+let g:tmuxcomplete#trigger = 'omnifunc'
+
 let g:gundo_width = 50
 let g:gundo_preview_height = 15
 let g:gundo_right = 0
 let g:gundo_preview_bottom = 1
 
-" Required for vim-textobj-rubyblock
-runtime macros/matchit.vim
+let g:matchup_matchparen_status_offscreen = 1
+let g:matchup_transmute_enabled = 1
+
+" " Required for vim-textobj-rubyblock
+" runtime macros/matchit.vim
 " From https://github.com/nelstrom/vim-textobj-rubyblock:
 " It is also essential that you enable filetype plugins, and disable Vi compatible mode. Placing these lines in your vimrc file will do this:
 set nocompatible
@@ -58,6 +75,8 @@ colorscheme tomorrow-night-dcosson
 "Simple switching between hard tabs and spaces
 command! -nargs=* HardTab setlocal noexpandtab shiftwidth=4
 command! -nargs=? SoftTab setlocal expandtab tabstop=<args> shiftwidth=<args> softtabstop=<args>
+
+command! PrettyJSON %!python -m json.tool
 
 set hidden " allow leaving buffer with outstanding changes
 set number
@@ -94,6 +113,38 @@ let g:Powerline_stl_path_style = 'short'
 set t_Co=256
 set laststatus=2 "show even if window not split
 " set statusline=%F%m%r%h%w\ \ \ [TYPE=%Y]\ \ \ [POS=%l,%v][%p%%]" [FORMAT=%{&ff}] %{strftime(\"%d/%m/%y\ -\ %H:%M\")} %F%m%r%h%w
+
+" lightline *****************************************************************
+set laststatus=2 " Show filename at bottom of buffer
+let g:lightline = {}
+let g:lightline.colorscheme = 'wombat'
+let g:lightline.active = {}
+let g:lightline.active.left = [ ['mode', 'paste'], [ 'gitbranch', 'readonly', 'relativepath', 'modified' ] ]
+let g:lightline.component_function = { 'gitbranch': 'fugitive#head' }
+      " \ 'colorscheme': 'wombat',
+      " \ 'active': {
+      " \   'left': [ [ 'mode', 'paste' ],
+      " \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
+      " \ },
+      " \ 'component_function': {
+      " \   'gitbranch': 'fugitive#head'
+      " \ },
+      " \ }
+ let g:lightline.component_expand = {
+      \  'linter_checking': 'lightline#ale#checking',
+      \  'linter_warnings': 'lightline#ale#warnings',
+      \  'linter_errors': 'lightline#ale#errors',
+      \  'linter_ok': 'lightline#ale#ok',
+      \ }
+let g:lightline.component_type = {
+      \     'linter_checking': 'left',
+      \     'linter_warnings': 'warning',
+      \     'linter_errors': 'error',
+      \     'linter_ok': 'left',
+      \ }
+let g:lightline.active.right = [[ 'linter_checking', 'linter_errors', 'linter_warnings', 'linter_ok' ]]
+" lightline *****************************************************************
+
 
 let g:miniBufExplMapWindowNavVim = 1
 let g:miniBufExplMapWindowNavArrows = 1
@@ -332,6 +383,10 @@ let g:ale_javascript_flow_executable = './dev-scripts/flow-proxy.sh'
 " let g:ale_ruby_rubocop_options = ' -P '
 
 let g:flow#enabled = 0
+let g:flow#timeout = 8
+let g:flow#flowpath = "/Users/greegles/code/fin-core-beta/node_modules/.bin/flow"
+let g:flow#autoclose = 1
+
 
 " key shortcuts
 " nmap <Ctrl>P ::CtrlPClearCache<CR>
