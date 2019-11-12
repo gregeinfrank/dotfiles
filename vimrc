@@ -14,6 +14,7 @@ Plug 'itchyny/lightline.vim'
 " Plug 'flowtype/vim-flow'
 Plug 'galooshi/vim-import-js' " First you need to `npm install -g import-js`
 Plug 'gregeinfrank/tomorrow-night-dcosson.vim'
+Plug 'JamshedVesuna/vim-markdown-preview' " Reqires `brew install grip`
 Plug 'jlanzarotta/bufexplorer'
 Plug '/usr/local/opt/fzf' " first you need to `brew install fzf`
 Plug 'junegunn/fzf.vim'
@@ -49,6 +50,15 @@ Plug 'sjl/gundo.vim'
 Plug 'airblade/vim-gitgutter'
 
 call plug#end()
+
+let vim_markdown_preview_hotkey='<C-m>'
+let vim_markdown_preview_github=1
+let vim_markdown_preview_browser='Google Chrome'
+
+
+let g:gh_trace = 1
+let g:gh_open_command = 'open '
+
 
 let g:deoplete#enable_at_startup = 1
 let g:tmuxcomplete#trigger = 'omnifunc'
@@ -374,9 +384,9 @@ nnoremap <leader>a :ALENextWrap<CR>
 " language-specific options
 
 " This is for using `prettier`
-let g:ale_javascript_prettier_options = ' --config $FIN_HOME/.prettierrc '
+" let g:ale_javascript_prettier_options = ' --config $CODEZ/asana2/.prettierrc '
 " This is for using `prettier_d`
-let g:ale_javascript_prettier_options = ' --pkg-conf --fallback '
+" let g:ale_javascript_prettier_options = ' --pkg-conf --fallback '
 
 " let g:ale_javascript_prettier_executable = '/usr/local/bin/prettier'
 let g:ale_javascript_flow_executable = './dev-scripts/flow-proxy.sh'

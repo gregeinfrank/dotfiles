@@ -17,6 +17,7 @@
         br = branch
 	ci = commit -a
 	co = checkout
+        com = checkout gregeinfrank-master
         cob = "!git co -b $1 && git push -u origin"
         rmb = "!git br -D $1 && git push origin --delete $1"
 	dwc = diff -w -M --color-words
@@ -51,3 +52,6 @@
 [credential "https://git-codecommit.*.amazonaws.com"]
     helper = !aws codecommit credential-helper $@ 
     UseHttpPath = true
+
+[blame]
+	ignoreRevsFile = /Users/gregeinfrank/asana_prettier_commit
